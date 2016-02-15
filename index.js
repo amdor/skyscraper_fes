@@ -1,61 +1,62 @@
+var uriInputFieldIdPrefix = "uriInputField";
+
 /**
- *addEvent function for crossplatform add event capability
+ * addEvent function for crossplatform add event capability
+ * http://stackoverflow.com/questions/6927637/addeventlistener-in-internet-explorer
  */
-function addEvent(elem, evnt, func) { //http://stackoverflow.com/questions/6927637/addeventlistener-in-internet-explorer
-   if (elem.addEventListener)  // W3C DOM
+function addEvent(elem, evnt, func) {
+   if (elem.addEventListener) { // W3C DOM
       elem.addEventListener(evnt,func,false);
-   else if (elem.attachEvent) { // IE DOM
+   } else if (elem.attachEvent) { // IE DOM
       elem.attachEvent("on"+evnt, func);
-   }
-   else { // No much to do
+   } else { // No much to do
       elem[evnt] = func;
    }
 }
 
-var inputUriCount = 0;
 var sendButton = null;
 var inputContainerDiv = null;
-var textDivTemplate = null;
+var currentInputUriCount = 0;
 
+/**
+ * Saves important user data to sessionStorage before leaving the page
+ */
+function beforeWindowUnload(event) {
+   sessionStorage.inputUriCount = currentInputUriCount;
+   var uriArray = new Array();
+   for(var i = 0; i < currentInputUriCount; i++) {
+      var textFieldHolder = document.getElementById(uriInputFieldIdPrefix + i);
+      uriArray.push( (textFieldHolder && textFieldHolder.value) ? textFieldHolder.value : "" );
+   }
+   sessionStorage.inputUriTextContent = JSON.stringify(uriArray);
+}
+/**
+ * Initialize page's dynamic contents
+ */
 function windowLoaded(event) {
-    sendButton = document.getElementById("sendButton");
-    
-    //creating the div that'll contain all input fields
-    var textDiv = document.createElement("DIV");
-    textDiv.className = "inputTextDiv";
-    textDiv.id = "uriArray"+inputUriCount;
-    textDiv.innerHTML = "hasznaltauto.hu url:";
-    
-    //textfield that asks for a car uri
-    var textField = document.createElement("INPUT");
-    textField.id = "uriInput"+inputUriCount;
-    textField.type = "text";
-    textField.name = "uri"+inputUriCount;
-    
-    //add a new input field, or remove current
-    var anchorButtonPlus = document.createElement("A");
-    anchorButtonPlus.setAttribute("href", "#");
-    anchorButtonPlus.className = "roundButton";
-    
-    var anchorButtonMinus = anchorButtonPlus.cloneNode();
-    
-    anchorButtonPlus.innerHTML = "+";
-    anchorButtonMinus.innerHTML = "-";
-    
-    textDiv.appendChild(textField);
-    textDiv.appendChild(anchorButtonPlus);
-    textDiv.appendChild(anchorButtonMinus);
-    inputContainerDiv = document.getElementById("inputContainerID");
-    inputContainerDiv.insertBefore(textDiv, sendButton);
-    
-    addEvent(inputContainerDiv,"click", addTextDiv);
-    addEvent(inputContainerDiv,"click", deleteTextDiv);
-     
-    textDivTemplate = textDiv.cloneNode(true); //clone it to avoid inheriting further modifications needed for the first row only
-    inputUriCount++;
-    
-    //for the first  row hide minus button
-    anchorButtonMinus.style.display = "none";
+   sendButton = document.getElementById("sendButton");
+   inputContainerDiv = document.getElementById("inputContainerID");
+   
+   //creating the divs which will contain all input fields
+   if( !sessionStorage.inputUriCount || sessionStorage.inputUriCount > 9 || sessionStorage.inputUriCount < 1 ) {
+     sessionStorage.removeItem
+     var textDiv = createTextDiv(0);
+     inputContainerDiv.insertBefore(textDiv, sendButton);
+   } else {
+      var savedUris = JSON.parse(sessionStorage.inputUriTextContent);
+      for(var i = 0; i < Number(sessionStorage.inputUriCount); i++) { 
+         var textDiv = createTextDiv(i, savedUris[i]);
+         inputContainerDiv.insertBefore(textDiv, sendButton);
+      }
+   }
+   
+   //don't add input handler for each button and textfield, propagation check will do just fine
+   addEvent(inputContainerDiv, "click", addTextDiv);
+   addEvent(inputContainerDiv, "click", deleteTextDiv);
+   addEvent(inputContainerDiv, "change", inputUriChanged);
+   
+   //for the first  row hide minus button
+   document.getElementById("anchorButtonMinus0").style.display = "none";
     
 }
 
@@ -65,16 +66,12 @@ function windowLoaded(event) {
  *We add a new div with the input fields from the template
 */
 function addTextDiv(event) {
-    if (event.target.className === "roundButton" && event.target.innerHTML === "+") {
-        var newTextDiv = textDivTemplate.cloneNode(true);
-        newTextDiv.id = "uriArray"+inputUriCount;
-        var textField = newTextDiv.getElementsByTagName("INPUT")[0];
-        textField.id = "uriInput"+inputUriCount;
-        textField.name = "uri"+inputUriCount;
-        inputContainerDiv.insertBefore(newTextDiv, sendButton);
-        inputUriCount++;
-    }
-    event.stopPropagation();
+   //TODO give proper error message if user tries to make more than 10 textdiv
+   if ( event.target.id && event.target.id.includes("anchorButtonPlus") && currentInputUriCount < 10 ) {
+      var addedTextDiv = createTextDiv(currentInputUriCount);
+      inputContainerDiv.insertBefore(addedTextDiv, sendButton);
+      event.stopPropagation();
+   }
 }
 
 /**
@@ -83,9 +80,13 @@ function addTextDiv(event) {
  *Removes inputfields next to the clicked minus button.
  */
 function deleteTextDiv(event) {
-    if (event.target.className === "roundButton" && event.target.innerHTML === "-") {
-        inputContainerDiv.removeChild(event.target.parentNode);
-        inputUriCount--;
+    if ( event.target.id && event.target.id.includes("anchorButtonMinus") ) {
+      inputContainerDiv.removeChild(event.target.parentNode);
+      currentInputUriCount--;
+      event.stopPropagation();
     }
-    event.stopPropagation();
+}
+
+function inputUriChanged( event ) {
+    
 }
