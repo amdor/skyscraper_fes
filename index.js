@@ -14,8 +14,8 @@ function addEvent(elem, evnt, func) {
    }
 }
 
-var sendButton = null;
-var inputContainerDiv = null;
+var sendButtonDiv = null;
+var formElement = null;
 var currentInputUriCount = 0;
 
 /**
@@ -34,30 +34,31 @@ function beforeWindowUnload(event) {
  * Initialize page's dynamic contents
  */
 function windowLoaded(event) {
-   sendButton = document.getElementById("sendButton");
-   inputContainerDiv = document.getElementById("inputContainerID");
+   sendButtonDiv = document.getElementById("sendButtonDiv");
+   formElement = document.getElementById("postForm");
    
    //creating the divs which will contain all input fields
    if( !sessionStorage.inputUriCount || sessionStorage.inputUriCount > 9 || sessionStorage.inputUriCount < 1 ) {
      sessionStorage.removeItem
      var textDiv = createTextDiv(0);
-     inputContainerDiv.insertBefore(textDiv, sendButton);
+     formElement.insertBefore(textDiv, sendButtonDiv);
    } else {
       var savedUris = JSON.parse(sessionStorage.inputUriTextContent);
       for(var i = 0; i < Number(sessionStorage.inputUriCount); i++) { 
          var textDiv = createTextDiv(i, savedUris[i]);
-         inputContainerDiv.insertBefore(textDiv, sendButton);
+         formElement.insertBefore(textDiv, sendButtonDiv);
       }
    }
    
    //don't add input handler for each button and textfield, propagation check will do just fine
-   addEvent(inputContainerDiv, "click", addTextDiv);
-   addEvent(inputContainerDiv, "click", deleteTextDiv);
-   addEvent(inputContainerDiv, "change", inputUriChanged);
+   addEvent(formElement, "click", addTextDiv);
+   addEvent(formElement, "click", deleteTextDiv);
+   addEvent(formElement, "change", inputUriChanged);
    
    //for the first  row hide minus button
-   document.getElementById("anchorButtonMinus0").style.display = "none";
+   document.getElementById("inputButtonMinus0").style.visibility = "hidden";
     
+   sendButtonDiv.style.paddingTop = "2px";
 }
 
 /**
@@ -67,9 +68,10 @@ function windowLoaded(event) {
 */
 function addTextDiv(event) {
    //TODO give proper error message if user tries to make more than 10 textdiv
-   if ( event.target.id && event.target.id.includes("anchorButtonPlus") && currentInputUriCount < 10 ) {
+   if ( event.target.id && event.target.id.includes("inputButtonPlus") && currentInputUriCount < 10 ) {
+      event.target.blur(); //disallow strucked focus
       var addedTextDiv = createTextDiv(currentInputUriCount);
-      inputContainerDiv.insertBefore(addedTextDiv, sendButton);
+      formElement.insertBefore(addedTextDiv, sendButtonDiv);
       event.stopPropagation();
    }
 }
@@ -80,8 +82,8 @@ function addTextDiv(event) {
  *Removes inputfields next to the clicked minus button.
  */
 function deleteTextDiv(event) {
-    if ( event.target.id && event.target.id.includes("anchorButtonMinus") ) {
-      inputContainerDiv.removeChild(event.target.parentNode);
+    if ( event.target.id && event.target.id.includes("inputButtonMinus") ) {
+      formElement.removeChild(event.target.parentNode);
       currentInputUriCount--;
       event.stopPropagation();
     }
