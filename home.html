@@ -17,6 +17,25 @@
     </script>
 </head>
 <body>
+<nav class="navbar navbar-default nav-justified">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#comparatorNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="#">AutoComparator</a>
+    </div>
+    <div class="collapse navbar-collapse" id="comparatorNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Autók</a></li>
+        <li><a href="#">Találati lista</a></li>
+        <li><a href="#">Bővebb keresés</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 <div class="inputContainerDiv container" id="inputContainerID">
     <label for="urls">Másolja be az összehasonlítandó autók adatlapjának címét Példa: http://www.hasznaltauto.hu/márka/típus-azonosító</label>
     <form role="form" class="form" id="postForm" action="proxy.php" method="post">
