@@ -1,6 +1,7 @@
 <?php
     $carUris = $_POST["uri"];
-    $service_url = 'http://localhost:8089/';
+   // $service_url = 'http://localhost:8089/';
+    $service_url = 'http://vm.ik.bme.hu:12412/';
     $curl = curl_init($service_url);
     
     $curl_post_data = "";

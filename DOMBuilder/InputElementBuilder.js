@@ -51,6 +51,5 @@ function addOnFocus(event) {
 }
 
 function isLastField(field) {
-   console.log( field.id && field.id === uriInputFieldIdPrefix + (textDivMaxIndex).toString() );
-    return field.id && field.id === uriInputFieldIdPrefix + (textDivMaxIndex).toString();
+   return ( field.id && field.id === uriInputFieldIdPrefix + (textDivMaxIndex).toString() ) || currentInputUriCount === 1;
 }

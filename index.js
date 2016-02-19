@@ -49,6 +49,8 @@ function beforeWindowUnload(event) {
  * Initialize page's dynamic contents
  */
 function windowLoaded(event) {
+   //Make navbar
+   document.body.insertBefore( createNavbar(), document.body.firstChild );
    sendButtonDiv = document.getElementById("sendButtonDiv");
    formElement = document.getElementById("postForm");
    
