@@ -18,16 +18,21 @@
 </head>
 <body>
 <div class="inputContainerDiv container" id="inputContainerID">
+    <div class="alert alert-warning" role="alert">Az oldal jelenleg demo módban üzemel, fejlesztés alatt áll! Nem minden funkció mindig elérhető!</div>
     <div class="row">
-        <label class="col-md-10" for="urls">Másolja be az összehasonlítandó autók adatlapjának címét Példa: http://www.hasznaltauto.hu/márka/típus-azonosító</label>
+        <label class="col-md-10" for="urls">Másolja be az összehasonlítandó autók adatlapjának címét </br> Példa: http://www.hasznaltauto.hu/márka/típus-azonosító</label>
+        <div class="col-md-10">Az egyes autók kiértékelése másodperceket is igénybe vehet</div>
     </div>
-    <form role="form" class="form" id="postForm" action="proxy.php" method="post">
+    <form role="form" class="form" id="postForm" action="" method="post">
         <div class="row" id="sendButtonDiv">
             <div class="col-md-10">         
-                <input id="sendButton" class="btn btn-primary form-control" type="submit">
+                <input id="sendButton" class="btn btn-primary form-control" type="button" value="Elküldés">
             </div>
         </div>
     </form>
+</div>
+<div class="container" id="resultTable">
+    
 </div>
 
 </body>

@@ -52,6 +52,7 @@ function windowLoaded(event) {
    //Make navbar
    document.body.insertBefore( createNavbar(), document.body.firstChild );
    sendButtonDiv = document.getElementById("sendButtonDiv");
+   addEvent(document.getElementById("sendButton"), "click", submitForm);
    formElement = document.getElementById("postForm");
    
    //creating the divs which will contain all input fields
@@ -87,4 +88,33 @@ function deleteTextDiv(event) {
       currentInputUriCount--;
       event.stopPropagation();
     }
+}
+
+function submitForm(event) {
+   var form = document.forms[0];
+   var postText = "";
+   for(var i = 0; i < form.elements.length; i++) {
+      if (form.elements[i].getAttribute("type") === "url") {
+         postText += form.elements[i].value + "\n";
+      }
+   }
+   console.log(postText);
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+         document.getElementById("resultTable").innerHTML = xhttp.responseText;
+      } else if (xhttp.readyState == 4 && xhttp.status >= 400) {
+         var notificationAlert = document.createElement("DIV");
+         notificationAlert.className = "col-md-10 alert alert-danger fade in";
+         notificationAlert.role = "alert";
+         notificationAlert.id = "formAlert";
+         notificationAlert.innerHTML = "Sikertelen művelet. Ellenőrizze a megadott címeket, vagy próbálja meg később";
+         document.getElementById("inputContainerID").appendChild(notificationAlert);
+         $("#formAlert").delay(4000).fadeOut(800, function() {
+            $(this).alert('close');
+         });
+      }
+   };
+   xhttp.open("POST", "proxy.php", true);
+   xhttp.send(postText);
 }
