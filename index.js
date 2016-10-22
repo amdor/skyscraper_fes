@@ -57,7 +57,7 @@ function windowLoaded(event) {
    
    //creating the divs which will contain all input fields
    if( !sessionStorage.inputUriCount || sessionStorage.inputUriCount > 9 || sessionStorage.inputUriCount < 1 ) {
-     sessionStorage.removeItem
+     sessionStorage.clear();
      var textDiv = createTextDiv();
      formElement.insertBefore(textDiv, sendButtonDiv);
    } else {
