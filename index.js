@@ -108,7 +108,7 @@ function submitForm(event) {
          notificationAlert.className = "col-md-10 alert alert-danger fade in";
          notificationAlert.role = "alert";
          notificationAlert.id = "formAlert";
-         notificationAlert.innerHTML = "Sikertelen művelet. Ellenőrizze a megadott címeket, vagy próbálja meg később";
+         notificationAlert.innerHTML = "Sikertelen művelet. Ellenőrizze a megadott címeket, vagy próbálja meg később! Státusz " + xhttp.status + " " + xhttp.statusText;
          document.getElementById("inputContainerID").appendChild(notificationAlert);
          $("#formAlert").delay(4000).fadeOut(800, function() {
             $(this).alert('close');
