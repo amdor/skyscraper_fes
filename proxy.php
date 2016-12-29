@@ -1,6 +1,6 @@
 <?php
 try {
-    $service_url = 'http://ec2-107-23-128-76.compute-1.amazonaws.com:8089/';
+    $service_url = 'http://ec2-54-145-227-27.compute-1.amazonaws.com:8089/';
 
     //not using $_POST since the content is raw
     //http://stackoverflow.com/questions/8893574/php-php-input-vs-post
